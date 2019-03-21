@@ -20,7 +20,7 @@ if not SLACK_URL:
     exit(1)
 
 def days_from_christmas():
-    """Calculates the number of days between the current date and the next 
+    """Calculates the number of days between the current date and the next
     Christmas. Returns the string to displayed.
     """
     currentdate = datetime.now()
@@ -47,7 +47,7 @@ def days_from_date(strdate, business_days):
         delta = (futuredate - currentdate).days + 1
     return delta
 
-    
+
 def events(strdate, event, business_days):
     """ Returns string to be displayed with the event mentioned. Sends an error
     if date is incorrect
@@ -80,30 +80,29 @@ def date_only(strdate, business_days):
     if days == -1:
         return "%d %sday since %s" % (1, day_qualifier, futuredate.strftime("%d %B, %Y"))
     if days == -2:
-        return "%d %sdays since %s" % (days, day_qualifier, futuredate.strftime("%d %B, %Y")) 
+        return "%d %sdays since %s" % (days, day_qualifier, futuredate.strftime("%d %B, %Y"))
     if days == 1:
-        return "%d %sday until %s" % (days, day_qualifier, futuredate.strftime("%d %B, %Y")) 
+        return "%d %sday until %s" % (days, day_qualifier, futuredate.strftime("%d %B, %Y"))
     else:
         return "%d %sdays until %s" % (days, day_qualifier, futuredate.strftime("%d %B, %Y"))
-    
+
 
 
 def post(out):
     """ Posts a request to the slack webhook. Payload can be customized
-    so the message in slack is customized. The variable out is the text 
+    so the message in slack is customized. The variable out is the text
     to be displayed.
-    """    
+    """
 
     payload = {
         "attachments": [
-            {   
-                "title": "COUNTDOWN!",
-                "text": out,
-                "color": "#7CD197"
+            {
+                "title": out,
+                "image_url": "https://terrigen-cdn-dev.marvel.com/content/prod/1x/avengersendgame_lob_log_01.png"
             }
         ]
     }
-    
+
     r = requests.post(SLACK_URL, data=json.dumps(payload))
 
 
@@ -111,7 +110,7 @@ def post_error():
     """Sends error message in Slack to alert the user
     about the incorrect date argument
     """
-    
+
     payload = {
         "attachments": [
             {
@@ -123,22 +122,22 @@ def post_error():
             }
         ]
     }
-    
+
     r = requests.post(SLACK_URL, data=json.dumps(payload))
- 
+
 
 @manager.option("-d", "--deadline", dest="date",
-                      help="Specify the deadline in ISO format: yyyy-mm-dd", 
+                      help="Specify the deadline in ISO format: yyyy-mm-dd",
                       metavar="DEADLINE")
-@manager.option("-e", "--event", dest="event", 
+@manager.option("-e", "--event", dest="event",
                       help="Name of the deadline event",metavar="EVENT")
-@manager.option("-b", "--business-days", dest="business_days", action="store_true", 
+@manager.option("-b", "--business-days", dest="business_days", action="store_true",
                       help="Give the count of business days only")
 def deadline(date, event, business_days):
     """ Method takes two optional arguments. Displays in slack channel
     the number of days till the event. If no arguments are given,
     the number of days till Christmas is displayed.
-    """    
+    """
     try:
         result = ""
         if date:
@@ -152,17 +151,17 @@ def deadline(date, event, business_days):
         post_error()
     else:
         post(result)
-        
+
 
 
 @manager.command
 def initiate():
     payload = { "text": "App is now connected to your Slack Channel."}
     r = requests.post(SLACK_URL, data=json.dumps(payload))
-    
-    
 
-    
+
+
+
 if __name__ == "__main__":
     manager.run()
 
