@@ -98,7 +98,7 @@ def post(out):
         "attachments": [
             {
                 "title": out,
-                "image_url": "https://terrigen-cdn-dev.marvel.com/content/prod/1x/avengersendgame_lob_log_01.png"
+                "image_url": "https://www.slashfilm.com/wp/wp-content/images/Detective-Pikachu-Early-Reaction.jpg"
             }
         ]
     }
