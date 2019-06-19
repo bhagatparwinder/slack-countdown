@@ -14,10 +14,11 @@ manager = Manager(app)
 
 """Creates web app to be deployed on Heroku."""
 
-SLACK_URL = os.environ.get('SLACK_URL')
+SLACK_URL = os.environ.get("SLACK_URL")
 if not SLACK_URL:
     print("Missing environment variable SLACK_URL")
     exit(1)
+
 
 def days_from_christmas():
     """Calculates the number of days between the current date and the next
@@ -40,7 +41,7 @@ def days_from_date(strdate, business_days):
     as date caclulate is relative to time
     """
     currentdate = datetime.today()
-    futuredate = datetime.strptime(strdate, '%Y-%m-%d')
+    futuredate = datetime.strptime(strdate, "%Y-%m-%d")
     if business_days:
         delta = workdays.networkdays(currentdate, futuredate)
     else:
@@ -56,7 +57,7 @@ def events(strdate, event, business_days):
     day_qualifier = ""
     if business_days:
         day_qualifier = "business "
-    assert (days >= -2), "Date needs to be in the future"
+    assert days >= -2, "Date needs to be in the future"
     if days == -1:
         return "%d %sday since %s" % (1, day_qualifier, event)
     elif days == -2:
@@ -75,17 +76,32 @@ def date_only(strdate, business_days):
     day_qualifier = ""
     if business_days:
         day_qualifier = "business "
-    assert (days >= -2), "Date needs to be in the future"
-    futuredate = datetime.strptime(strdate, '%Y-%m-%d')
+    assert days >= -2, "Date needs to be in the future"
+    futuredate = datetime.strptime(strdate, "%Y-%m-%d")
     if days == -1:
-        return "%d %sday since %s" % (1, day_qualifier, futuredate.strftime("%d %B, %Y"))
+        return "%d %sday since %s" % (
+            1,
+            day_qualifier,
+            futuredate.strftime("%d %B, %Y"),
+        )
     if days == -2:
-        return "%d %sdays since %s" % (days, day_qualifier, futuredate.strftime("%d %B, %Y"))
+        return "%d %sdays since %s" % (
+            days,
+            day_qualifier,
+            futuredate.strftime("%d %B, %Y"),
+        )
     if days == 1:
-        return "%d %sday until %s" % (days, day_qualifier, futuredate.strftime("%d %B, %Y"))
+        return "%d %sday until %s" % (
+            days,
+            day_qualifier,
+            futuredate.strftime("%d %B, %Y"),
+        )
     else:
-        return "%d %sdays until %s" % (days, day_qualifier, futuredate.strftime("%d %B, %Y"))
-
+        return "%d %sdays until %s" % (
+            days,
+            day_qualifier,
+            futuredate.strftime("%d %B, %Y"),
+        )
 
 
 def post(out):
@@ -98,7 +114,7 @@ def post(out):
         "attachments": [
             {
                 "title": out,
-                "image_url": "https://www.slashfilm.com/wp/wp-content/images/Detective-Pikachu-Early-Reaction.jpg"
+                "image_url": "https://static0.srcdn.com/wordpress/wp-content/uploads/2018/10/Spider-Man-Far-From-Home-Teaser-Poster.jpg",
             }
         ]
     }
@@ -115,10 +131,12 @@ def post_error():
         "attachments": [
             {
                 "title": "Error",
-                "text": ("Date entered must be in the future. "
-                        "\n Go to the <https://heroku.com|Heroku Scheduler> for you app and edit"
-                        " the command"),
-                        "color": "#525162"
+                "text": (
+                    "Date entered must be in the future. "
+                    "\n Go to the <https://heroku.com|Heroku Scheduler> for you app and edit"
+                    " the command"
+                ),
+                "color": "#525162",
             }
         ]
     }
@@ -126,13 +144,23 @@ def post_error():
     r = requests.post(SLACK_URL, data=json.dumps(payload))
 
 
-@manager.option("-d", "--deadline", dest="date",
-                      help="Specify the deadline in ISO format: yyyy-mm-dd",
-                      metavar="DEADLINE")
-@manager.option("-e", "--event", dest="event",
-                      help="Name of the deadline event",metavar="EVENT")
-@manager.option("-b", "--business-days", dest="business_days", action="store_true",
-                      help="Give the count of business days only")
+@manager.option(
+    "-d",
+    "--deadline",
+    dest="date",
+    help="Specify the deadline in ISO format: yyyy-mm-dd",
+    metavar="DEADLINE",
+)
+@manager.option(
+    "-e", "--event", dest="event", help="Name of the deadline event", metavar="EVENT"
+)
+@manager.option(
+    "-b",
+    "--business-days",
+    dest="business_days",
+    action="store_true",
+    help="Give the count of business days only",
+)
 def deadline(date, event, business_days):
     """ Method takes two optional arguments. Displays in slack channel
     the number of days till the event. If no arguments are given,
@@ -153,16 +181,12 @@ def deadline(date, event, business_days):
         post(result)
 
 
-
 @manager.command
 def initiate():
-    payload = { "text": "App is now connected to your Slack Channel."}
+    payload = {"text": "App is now connected to your Slack Channel."}
     r = requests.post(SLACK_URL, data=json.dumps(payload))
-
-
 
 
 if __name__ == "__main__":
     manager.run()
-
 
