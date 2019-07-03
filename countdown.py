@@ -114,7 +114,7 @@ def post(out):
         "attachments": [
             {
                 "title": out,
-                "image_url": "https://static0.srcdn.com/wordpress/wp-content/uploads/2018/10/Spider-Man-Far-From-Home-Teaser-Poster.jpg",
+                "image_url": "https://img.buzzfeed.com/buzzfeed-static/static/2019-02/4/14/enhanced/buzzfeed-prod-web-06/original-11141-1549307330-2.jpg",
             }
         ]
     }
